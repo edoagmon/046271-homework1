@@ -42,7 +42,10 @@ package homework1;
 public class GeoSegment  {
 
 	
-  	// TODO Write abstraction function and representation invariant
+  	private String segment_name;
+  	private GeoPoint p1,p2;
+  	private double heading;
+  	private double dist;
 	
 	
   	/**
@@ -51,7 +54,17 @@ public class GeoSegment  {
      * @effects constructs a new GeoSegment with the specified name and endpoints.
      **/
   	public GeoSegment(String name, GeoPoint p1, GeoPoint p2) {
-  		// TODO Implement this method
+  		if (name == null || p1 == null || p2 == null )
+  			return;
+  		
+  		this.p1           = p1;
+  		this.p2           = p2;
+  		this.segment_name = name;
+  		this.heading      = p1.headingTo(p2);
+  		this.dist         = p1.distanceTo(p2);  //Math.sqrt(Math.pow(p2.x-p1.x,2) + Math.pow(p2.y-p1.y,2));
+  		this.checkRep();
+  		
+  		
   	}
 
 
@@ -61,7 +74,9 @@ public class GeoSegment  {
      *         && gs.p1 = this.p2 && gs.p2 = this.p1
      **/
   	public GeoSegment reverse() {
-  		// TODO Implement this method
+  		this.checkRep();
+  		GeoSegment rev_geo_seg = new GeoSegment(this.segment_name,this.p2,this.p1);
+  		return rev_geo_seg;
   	}
 
 
@@ -70,7 +85,8 @@ public class GeoSegment  {
      * @return the name of this GeoSegment.
      */
   	public String getName() {
-  		// TODO Implement this method
+  		this.checkRep();
+  		return this.segment_name;
   	}
 
 
@@ -79,7 +95,8 @@ public class GeoSegment  {
      * @return first endpoint of the segment.
      */
   	public GeoPoint getP1() {
-  		// TODO Implement this method
+  		this.checkRep();
+  		return this.p1;
   	}
 
 
@@ -88,7 +105,8 @@ public class GeoSegment  {
      * @return second endpoint of the segment.
      */
   	public GeoPoint getP2() {
-  		// TODO Implement this method
+  		this.checkRep();
+  		return this.p2;
   	}
 
 
@@ -98,7 +116,8 @@ public class GeoSegment  {
      *         Technion approximation.
      */
   	public double getLength() {
-  		// TODO Implement this method
+  		this.checkRep();
+  		return this.dist;
   	}
 
 
@@ -109,7 +128,8 @@ public class GeoSegment  {
      *         flat-surface, near the Technion approximation.
      **/
   	public double getHeading() {
-  		// TODO Implement this method
+  		this.checkRep();
+  		return this.heading;
   	}
 
 
@@ -119,7 +139,17 @@ public class GeoSegment  {
      *         && gs.name = this.name && gs.p1 = this.p1 && gs.p2 = this.p2
    	 **/
   	public boolean equals(Object gs) {
-  		// TODO Implement this method
+  		this.checkRep();
+  		if (gs == null || !(sg instanceof GeoSegment))
+  			return false;
+  		
+  		GeoSegment other_segment = (GeoSegment)gs;
+  		if (this.p1.equals(other_segment.p1) &&
+  		    this.p2.equals(other_segment.p2) &&
+  		    this.segment_name.equals(other_segment.segment_name))
+  			return true;
+  		else
+  			return else;
   	}
 
 
@@ -128,10 +158,9 @@ public class GeoSegment  {
      * @return a hash code value for this.
      **/
   	public int hashCode() {
-    	// This implementation will work, but you may want to modify it 
-    	// for improved performance. 
+  		this.checkRep();
 
-    	return 1;
+    	return (this.heading * this.p1)%300;
   	}
 
 
@@ -140,7 +169,22 @@ public class GeoSegment  {
      * @return a string representation of this.
      **/
   	public String toString() {
-  		// TODO Implement this method
+  		this.checkRep();
+  		String st = "name : " + this.segment_name + "coordnations"  + "("  + this.p1.getLongitude() + this.p1.getLatitude() +")"
+  								+ "("  + this.p2.getLongitude() + this.p2.getLatitude() +")";
+  		return st;
+  		
+  	}
+  	
+  	
+  	/**
+  	 * Check if the object is valid.
+  	 * @throws assertion error representation invariant is violated.
+  	 * 
+  	 **/
+  	private public void checkRep() {
+  		assert(this.dist>=0): "Error negetive distance";
+  		assert(0 <= this.heading && 360 >= this.heading):"fatal Error wrong coding for angel calcuation" ; 
   	}
 
 }

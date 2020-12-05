@@ -1,6 +1,7 @@
 package homework1;
 
-import java.util.Iterator;
+import java.util.*;
+
 
 /**
  * A GeoFeature represents a route from one location to another along a
@@ -37,6 +38,12 @@ import java.util.Iterator;
  **/
 public class GeoFeature {
 	
+	private String name_feature;
+	private GeoPoint start;
+	private GeoPoint end;
+	private double start_heading;
+	private double end_heading;
+	private final LinkedList<GeoSegment> segment_list;
 	// Implementation hint:
 	// When asked to return an Iterator, consider using the iterator() method
 	// in the List interface. Two nice classes that implement the List
@@ -60,7 +67,14 @@ public class GeoFeature {
      *          r.end = gs.p2
      **/
   	public GeoFeature(GeoSegment gs) {
-  		// TODO Implement this constructor
+  		this.name_feature       = gs.getName();
+  		this.addSegment(gs);
+  		this.start              = this.segment_list.getFirst().getP1();
+  		this.end		        = this.segment_list.getLast().getP1();
+  		this.start_heading	    = this.segment_list.getFirst().getHeading();
+  		this.end_heading	    = this.segment_list.getLast().getHeading();
+  		this.checkRep();
+  		
   	}
   
 
@@ -69,7 +83,8 @@ public class GeoFeature {
       * @return name of geographic feature
       */
   	public String getName() {
-  		// TODO Implement this method
+  		this.checkRep();
+  		return this.name_feature;
   	}
 
 
@@ -78,7 +93,8 @@ public class GeoFeature {
      * @return location of the start of the geographic feature.
      */
   	public GeoPoint getStart() {
-  		// TODO Implement this method
+  		this.checkRep();
+  		return this.start;
   	}
 
 
@@ -87,7 +103,8 @@ public class GeoFeature {
      * @return location of the end of the geographic feature.
      */
   	public GeoPoint getEnd() {
-  		// TODO Implement this method
+  		this.checkRep()
+  		return this.end;
   	}
 
 
@@ -97,7 +114,8 @@ public class GeoFeature {
      *         geographic feature, in degrees.
      */
   	public double getStartHeading() {
-  		// TODO Implement this method
+  		this.checkRep();
+  		return this.start_heading;
   	}
 
 
@@ -107,7 +125,8 @@ public class GeoFeature {
      *         geographic feature, in degrees.
      */
   	public double getEndHeading() {
-  		// TODO Implement this method
+  		this.checkRep();
+  		return this.end_heading;
   	}
 
 
@@ -119,7 +138,13 @@ public class GeoFeature {
      *         values are not necessarily equal.
      */
   	public double getLength() {
-  		// TODO Implement this method
+  		this.checkRep()
+  		double sum = 0;
+  		
+  		for (int i = 0 ; i<this.segment_list.size() ; i++) {
+  			sum+= this.segment_list.get(i).getLength();
+  		}
+  		return sum;
   	}
 
 
@@ -133,7 +158,17 @@ public class GeoFeature {
      *    	   r.length = this.length + gs.length
      **/
   	public GeoFeature addSegment(GeoSegment gs) {
-  		// TODO Implement this method
+  		this.checkRep()
+  		GeoFeature newGeoFtr = new GeoFeature(gs);
+  		newGeoFtr.segment_list.clear();
+  		newGeoFtr.segment_list.addAll(this.segment_list);
+  		newGeoFtr.segment_list.add(gs);
+  		
+  		
+  		newGeoFtr.end		        = newGeoFtr.segment_list.getLast().getP1();
+  		newGeoFtr.end_heading	    = newGeoFtr.segment_list.getLast().getHeading();
+  		return newGeoFtr;
+
   	}
 
 
@@ -156,7 +191,9 @@ public class GeoFeature {
      * @see homework1.GeoSegment
      */
   	public Iterator<GeoSegment> getGeoSegments() {
-  		// TODO Implement this method
+  		this.checkRep()
+  		LinkedList<GeoSegment> copy = this.segment_list.clone();
+  		return copy.iterator();  		
   	}
 
 
@@ -167,8 +204,20 @@ public class GeoFeature {
      *          the same elements in the same order).
      **/
   	public boolean equals(Object o) {
-  		// TODO Implement this method
+  		this.checkRep()
+  		if (o != null && o instanceof GeoFeature) {
+  			
+  			if (this.segment_list.size() == ((GeoFeature)o).segment_list.size()) {
+  				for (int i = 0; i < this.segment_list.size() ; i++) {
+  					if (this.segment_list.get(i).equals(((GeoFeature)o).segment_list.get(i))) {continue;}else{return false;}
+  				}
+  					return true; // if the loop ended with no break so the linklists equals
+  			}
+  		}
+  		return false;
   	}
+  	
+  	
 
 
   	/**
@@ -176,9 +225,7 @@ public class GeoFeature {
      * @return a hash code for this.
      **/
   	public int hashCode() {
-    	// This implementation will work, but you may want to modify it
-    	// improved performance.
-    	
+  		this.checkRep()
     	return 1;
   	}
 
@@ -188,6 +235,12 @@ public class GeoFeature {
    	 * @return a string representation of this.
      **/
   	public String toString() {
-  		// TODO Implement this method
+  		this.checkRep()
+  		return this.name_feature;
+  	}
+  	
+  	
+  	private checkRep() {
+  		assert(this.geoSegments.size() > 0) : "negetive size segments list";
   	}
 }
