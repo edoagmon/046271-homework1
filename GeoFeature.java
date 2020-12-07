@@ -38,12 +38,12 @@ import java.util.*;
  **/
 public class GeoFeature {
 	
-	private String name_feature;
+	private String nameFeature;
 	private GeoPoint start;
 	private GeoPoint end;
-	private double start_heading;
-	private double end_heading;
-	private final LinkedList<GeoSegment> segment_list;
+	private double startHeading;
+	private double endHeading;
+	private final LinkedList<GeoSegment> segmentList;
 	// Implementation hint:
 	// When asked to return an Iterator, consider using the iterator() method
 	// in the List interface. Two nice classes that implement the List
@@ -67,12 +67,13 @@ public class GeoFeature {
      *          r.end = gs.p2
      **/
   	public GeoFeature(GeoSegment gs) {
-  		this.name_feature       = gs.getName();
-  		this.addSegment(gs);
-  		this.start              = this.segment_list.getFirst().getP1();
-  		this.end		        = this.segment_list.getLast().getP1();
-  		this.start_heading	    = this.segment_list.getFirst().getHeading();
-  		this.end_heading	    = this.segment_list.getLast().getHeading();
+  		this.nameFeature        = gs.getName();
+  		segmentList = new LinkedList<GeoSegment>();
+  		this.segmentList.add(gs);
+  		this.start              = this.segmentList.getFirst().getP1();
+  		this.end		        = this.segmentList.getLast().getP2();
+  		this.startHeading	    = this.segmentList.getFirst().getHeading();
+  		this.endHeading	   		= this.segmentList.getLast().getHeading();
   		this.checkRep();
   		
   	}
@@ -84,7 +85,7 @@ public class GeoFeature {
       */
   	public String getName() {
   		this.checkRep();
-  		return this.name_feature;
+  		return this.nameFeature;
   	}
 
 
@@ -103,7 +104,7 @@ public class GeoFeature {
      * @return location of the end of the geographic feature.
      */
   	public GeoPoint getEnd() {
-  		this.checkRep()
+  		this.checkRep();
   		return this.end;
   	}
 
@@ -115,7 +116,7 @@ public class GeoFeature {
      */
   	public double getStartHeading() {
   		this.checkRep();
-  		return this.start_heading;
+  		return this.startHeading;
   	}
 
 
@@ -126,7 +127,7 @@ public class GeoFeature {
      */
   	public double getEndHeading() {
   		this.checkRep();
-  		return this.end_heading;
+  		return this.endHeading;
   	}
 
 
@@ -138,12 +139,12 @@ public class GeoFeature {
      *         values are not necessarily equal.
      */
   	public double getLength() {
-  		this.checkRep()
+  		this.checkRep();
   		double sum = 0;
-  		
-  		for (int i = 0 ; i<this.segment_list.size() ; i++) {
-  			sum+= this.segment_list.get(i).getLength();
+  		for (int i = 0 ; i<this.segmentList.size() ; i++) { // probably a bug
+  			sum+= this.segmentList.get(i).getLength();
   		}
+  		this.checkRep();
   		return sum;
   	}
 
@@ -158,15 +159,16 @@ public class GeoFeature {
      *    	   r.length = this.length + gs.length
      **/
   	public GeoFeature addSegment(GeoSegment gs) {
-  		this.checkRep()
+  		this.checkRep();
   		GeoFeature newGeoFtr = new GeoFeature(gs);
-  		newGeoFtr.segment_list.clear();
-  		newGeoFtr.segment_list.addAll(this.segment_list);
-  		newGeoFtr.segment_list.add(gs);
-  		
-  		
-  		newGeoFtr.end		        = newGeoFtr.segment_list.getLast().getP1();
-  		newGeoFtr.end_heading	    = newGeoFtr.segment_list.getLast().getHeading();
+  		newGeoFtr.segmentList.clear();
+  		newGeoFtr.segmentList.addAll(this.segmentList);
+  		newGeoFtr.segmentList.add(gs);
+  		newGeoFtr.start              = this.segmentList.getFirst().getP1();
+  		newGeoFtr.startHeading	    = this.segmentList.getFirst().getHeading();
+  		newGeoFtr.end		        = newGeoFtr.segmentList.getLast().getP2();
+  		newGeoFtr.endHeading	    = newGeoFtr.segmentList.getLast().getHeading();
+  		this.checkRep();
   		return newGeoFtr;
 
   	}
@@ -191,8 +193,9 @@ public class GeoFeature {
      * @see homework1.GeoSegment
      */
   	public Iterator<GeoSegment> getGeoSegments() {
-  		this.checkRep()
-  		LinkedList<GeoSegment> copy = this.segment_list.clone();
+  		this.checkRep();
+  		LinkedList<GeoSegment> copy = (LinkedList<GeoSegment>)this.segmentList.clone();
+  		this.checkRep();
   		return copy.iterator();  		
   	}
 
@@ -204,16 +207,22 @@ public class GeoFeature {
      *          the same elements in the same order).
      **/
   	public boolean equals(Object o) {
-  		this.checkRep()
-  		if (o != null && o instanceof GeoFeature) {
-  			
-  			if (this.segment_list.size() == ((GeoFeature)o).segment_list.size()) {
-  				for (int i = 0; i < this.segment_list.size() ; i++) {
-  					if (this.segment_list.get(i).equals(((GeoFeature)o).segment_list.get(i))) {continue;}else{return false;}
+  		this.checkRep();
+  		if (o != null && o instanceof GeoFeature) {//probably a bug ("get(i))"
+  			if (this.segmentList.size() == ((GeoFeature)o).segmentList.size()) {
+  				for (int i = 0; i < this.segmentList.size() ; i++) {
+  					if (this.segmentList.get(i).equals(((GeoFeature)o).segmentList.get(i))) {
+  						continue;
+  					}else{
+  						this.checkRep();
+  						return false;
+  					}
   				}
-  					return true; // if the loop ended with no break so the linklists equals
+  				this.checkRep();
+  				return true; // if the loop ended with no break so the linklists equals
   			}
   		}
+  		this.checkRep();
   		return false;
   	}
   	
@@ -225,7 +234,7 @@ public class GeoFeature {
      * @return a hash code for this.
      **/
   	public int hashCode() {
-  		this.checkRep()
+  		this.checkRep();
     	return 1;
   	}
 
@@ -235,12 +244,20 @@ public class GeoFeature {
    	 * @return a string representation of this.
      **/
   	public String toString() {
-  		this.checkRep()
-  		return this.name_feature;
+  		this.checkRep();
+  		return this.nameFeature;
   	}
   	
   	
-  	private checkRep() {
-  		assert(this.geoSegments.size() > 0) : "negetive size segments list";
+  	private void checkRep() {
+  		assert(this.segmentList.size() > 0) : "Empty segments list";
+  		GeoPoint start = null;
+  		for (GeoSegment gs : this.segmentList) {
+//  			assert(this.nameFeature.equals(gs.getName())); //check this line
+  			if (start != null) {
+  				assert(gs.getP1().equals(start)) : "None matching segments";
+  			}
+  			start = gs.getP2();
+  		}
   	}
 }

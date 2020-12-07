@@ -39,32 +39,24 @@ package homework1;
  *   heading : angle     // compass heading from p1 to p2, in degrees
  * </pre>
  **/
-public class GeoSegment  {
-
-	
+public class GeoSegment  {	
   	private String segment_name;
   	private GeoPoint p1,p2;
   	private double heading;
   	private double dist;
-	
-	
+		
   	/**
      * Constructs a new GeoSegment with the specified name and endpoints.
      * @requires name != null && p1 != null && p2 != null
      * @effects constructs a new GeoSegment with the specified name and endpoints.
      **/
   	public GeoSegment(String name, GeoPoint p1, GeoPoint p2) {
-  		if (name == null || p1 == null || p2 == null )
-  			return;
-  		
   		this.p1           = p1;
   		this.p2           = p2;
   		this.segment_name = name;
   		this.heading      = p1.headingTo(p2);
   		this.dist         = p1.distanceTo(p2);  //Math.sqrt(Math.pow(p2.x-p1.x,2) + Math.pow(p2.y-p1.y,2));
-  		this.checkRep();
-  		
-  		
+  		this.checkRep(); 		
   	}
 
 
@@ -140,7 +132,7 @@ public class GeoSegment  {
    	 **/
   	public boolean equals(Object gs) {
   		this.checkRep();
-  		if (gs == null || !(sg instanceof GeoSegment))
+  		if (gs == null || !(gs instanceof GeoSegment))
   			return false;
   		
   		GeoSegment other_segment = (GeoSegment)gs;
@@ -149,7 +141,7 @@ public class GeoSegment  {
   		    this.segment_name.equals(other_segment.segment_name))
   			return true;
   		else
-  			return else;
+  			return false;
   	}
 
 
@@ -159,8 +151,12 @@ public class GeoSegment  {
      **/
   	public int hashCode() {
   		this.checkRep();
-
-    	return (this.heading * this.p1)%300;
+  		int hashcode = 11;
+  		hashcode = 37 * hashcode + this.getName().hashCode();
+  		hashcode = 37 * hashcode + this.getP1().hashCode();
+  		hashcode = 37 * hashcode + this.getP2().hashCode();
+  		this.checkRep();
+    	return hashcode;
   	}
 
 
@@ -182,9 +178,11 @@ public class GeoSegment  {
   	 * @throws assertion error representation invariant is violated.
   	 * 
   	 **/
-  	private public void checkRep() {
-  		assert(this.dist>=0): "Error negetive distance";
-  		assert(0 <= this.heading && 360 >= this.heading):"fatal Error wrong coding for angel calcuation" ; 
+  	private void checkRep() {
+  		assert(this.dist >= 0):
+  			"Error negetive distance";
+  		assert(0 <= this.heading && 360 >= this.heading):
+  			"fatal Error wrong coding for angel calcuation" ; 
   	}
 
 }
