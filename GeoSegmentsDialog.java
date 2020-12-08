@@ -10,6 +10,7 @@ import javax.swing.JList;
  * <p>
  * A figure showing this GUI can be found in homework assignment #1.
  */
+																									
 public class GeoSegmentsDialog extends JDialog {
 
 	private static final long serialVersionUID = 1L;
@@ -25,6 +26,7 @@ public class GeoSegmentsDialog extends JDialog {
 	 * @effects Creates a new GeoSegmentsDialog JDialog with owner-frame
 	 * 			owner and parent pnlParent
 	 */
+																								
 	public GeoSegmentsDialog(Frame owner, RouteFormatterGUI pnlParent) {
 		// create a modal JDialog with the an owner Frame (a modal window
 		// in one that doesn't allow other windows to be active at the
@@ -36,3 +38,4 @@ public class GeoSegmentsDialog extends JDialog {
 		// TODO Write the body of this method
 	}
 }
+																								

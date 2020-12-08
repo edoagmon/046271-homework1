@@ -37,7 +37,7 @@ public abstract class RouteFormatter {
   		double routeHeading = heading;
   		while (geoFeature.hasNext()) {
   			GeoFeature gf = geoFeature.next();
-  			directions.concat(this.computeLine(gf, routeHeading));
+  			directions = directions.concat(this.computeLine(gf, routeHeading));
   			routeHeading  = gf.getEndHeading();
   		}
   		return directions;
@@ -102,7 +102,7 @@ public abstract class RouteFormatter {
   	
   	private double getAnglesDiff(double origHeading, double newHeading) {
   		 double angleDiff = newHeading - origHeading;
-  		 return ((angleDiff >= 0) ? (angleDiff) : ((angleDiff-360*Math.signum(angleDiff)))); 
+  		 return (((angleDiff >= -180) && (angleDiff<=180)) ? (angleDiff) : ((angleDiff-360*Math.signum(angleDiff)))); 
   		
   	}
   	
