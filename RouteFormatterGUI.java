@@ -40,7 +40,6 @@ public class RouteFormatterGUI extends JPanel {
 		lstSegments.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		JScrollPane scrlSegments = new JScrollPane(lstSegments);
 		scrlSegments.setPreferredSize(new Dimension(450, 100));
-
 		JLabel lblSegments = new JLabel("Route's GeoSegments:");
 		lblSegments.setLabelFor(lstSegments);
 
@@ -144,11 +143,23 @@ public class RouteFormatterGUI extends JPanel {
 	public void addSegment(GeoSegment segment) {
 		DefaultListModel<GeoSegment> model =
 				(DefaultListModel<GeoSegment>)(this.lstSegments.getModel());
-		
-		// TODO Write the body of this method
+		if (this.route == null) {
+			this.route = new Route(segment);
+		}else{
+			this.route = this.route.addSegment(segment);
+		}
+		model.addElement(segment);
+		RouteFormatter formatter = new DrivingRouteFormatter();
+		this.txtDrivingDirections.setText(formatter.computeDirections(this.route, 0));
+		formatter = new WalkingRouteFormatter();
+		this.txtWalkingDirections.setText(formatter.computeDirections(this.route, 0));
 	}
 
-
+	//write document
+	public Route getRoute() {
+		return this.route;
+	}
+	
     public static void main(String[] args) {
 		JFrame frame = new JFrame("Route Formatter GUI");
 		Container contentPane = frame.getContentPane();
